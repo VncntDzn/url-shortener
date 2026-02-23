@@ -1,0 +1,53 @@
+# Build output
+[Bb]in/
+[Oo]bj/
+out/
+publish/
+
+# User/IDE files
+.vs/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+*.user
+*.rsuser
+*.suo
+*.userprefs
+
+# Rider / ReSharper
+.idea/
+_ReSharper*/
+*.DotSettings.user
+
+# Test/coverage artifacts
+TestResults/
+*.trx
+coverage/
+coverage.*
+*.coverage
+*.coveragexml
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+!**/packages/build/
+
+# Logs/temp
+*.log
+logs/
+tmp/
+temp/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Local secrets/config overrides (keep templates tracked)
+appsettings.Local.json
+appsettings.*.local.json
+.env
+.env.*
+!.env.example
+
+.history/
