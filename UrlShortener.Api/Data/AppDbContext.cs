@@ -15,6 +15,12 @@ public sealed class AppDbContext : DbContext
         e.ToTable("short_links");
         e.HasKey(x => x.Id);
 
+
+        e.Property(x => x.Id)
+                .HasColumnType("uuid")
+                .HasDefaultValueSql("gen_random_uuid()")   // pgcrypto
+                .ValueGeneratedOnAdd();
+
         e.Property(x => x.Slug)
             .HasMaxLength(32)
             .IsRequired();

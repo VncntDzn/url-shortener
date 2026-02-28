@@ -38,10 +38,6 @@ public class ShortLinksController : ControllerBase
            [FromBody] CreateShortLinkRequest shortLinkRequest,
            CancellationToken ct)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
 
         var response = await _shortLinkHandler.HandleAsync(shortLinkRequest, ct);
 
