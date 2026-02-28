@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace UrlShortener.Api.Controllers;
 
@@ -8,47 +7,45 @@ namespace UrlShortener.Api.Controllers;
 public class ShortLinksController : ControllerBase
 {
 
-
     private readonly ILogger<ShortLinksController> _logger;
+    private readonly IShortLinkHandler _shortLinkHandler;
 
-    public ShortLinksController(ILogger<ShortLinksController> logger)
+    public ShortLinksController(ILogger<ShortLinksController> logger, IShortLinkHandler shortLinkHandler)
     {
         _logger = logger;
+        _shortLinkHandler = shortLinkHandler;
     }
 
-    /*  [HttpGet(Name = "/")]
-     public IEnumerable<WeatherForecast> Get()
-     {
-         return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-         {
-             Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-             TemperatureC = Random.Shared.Next(-20, 55),
-             Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-         })
-         .ToArray();
-     } */
+    [HttpGet("{shortLink:guid}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> Get()
+    {
 
-    [ProducesResponseType(typeof(CreateShortLinkResponse), StatusCodes.Status201Created)]
+        return Ok();
+    }
+
+    [HttpPut("{userId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> UpdateProfile(Guid userId, CancellationToken ct)
+    {
+
+        return NoContent();
+    }
+
     [HttpPost]
-    public ActionResult<CreateShortLinkResponse> Create([FromBody] CreateShortLinkRequest shortLinkRequest)
+    [ProducesResponseType(typeof(CreateShortLinkResponse), StatusCodes.Status201Created)]
+    public async Task<ActionResult<CreateShortLinkResponse>> Create(
+           [FromBody] CreateShortLinkRequest shortLinkRequest,
+           CancellationToken ct)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        // TODO: call your application/service layer here
-        var code = "abc123";
-
-        var response = new CreateShortLinkResponse
-        {
-            Code = code,
-            LongUrl = shortLinkRequest.LongUrl,
-            ShortUrl = $"{Request.Scheme}://{Request.Host}/{code}",
-            ExpiresAt = shortLinkRequest.ExpiresAt
-        };
+        var response = await _shortLinkHandler.HandleAsync(shortLinkRequest, ct);
 
         // 201 + Location header
-        return Created($"/{code}", response);
+        return Created($"/{response.Code}", response);
     }
 }
